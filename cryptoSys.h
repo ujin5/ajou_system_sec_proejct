@@ -7,6 +7,7 @@
 #include <openssl/bio.h>
 #include <openssl/err.h>
 #include <cstdint>
+#include <mutex>
 #include <map>
 #include <string>
 class CryptoSystem{
@@ -19,8 +20,10 @@ class CryptoSystem{
         std::map<std::string, std::string> getMemberPubKey();
         char * getMyPubKey();
         char * getMyPriKey();
+        std::mutex mMutex;
     private:
         RSA * mMyRSA;
         std::map<std::string, std::string> mPubKeys;
+        
 };
 #endif

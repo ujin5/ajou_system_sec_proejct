@@ -49,6 +49,7 @@ void Server::handleAccept(int fd){
         }
         uint8_t cmd = buffer.data[0];
         uint8_t * cur = &buffer.data[1];
+        mAcceptMutex.lock();
         switch(cmd){
             case CREATE_ROOM_REQ :
             {
@@ -59,7 +60,7 @@ void Server::handleAccept(int fd){
                 if(mChatRoom[room_name]){
                     uint8_t error_pkt[] = { CREATE_ROOM_RSP, 0xff };
                     write(fd, error_pkt, sizeof(error_pkt));
-                    continue;
+                    break;
                 }
                 mChatRoom[room_name] = new chatRoom(room_name);
                 mChatRoom[room_name]->enterRoom(fd, nick_name);
@@ -77,12 +78,12 @@ void Server::handleAccept(int fd){
                 if(!mChatRoom[room_name]){
                     uint8_t error_pkt[] = { ENTER_ROOM_RSP, 0xff };
                     write(fd, error_pkt, sizeof(error_pkt));
-                    continue;
+                    break;
                 }
                 else if(!mChatRoom[room_name]->enterRoom(fd, nick_name)){
                     uint8_t error_pkt[] = { ENTER_ROOM_RSP, 0xfe };
                     write(fd, error_pkt, sizeof(error_pkt));
-                    continue;
+                    break;
                 }
                 uint8_t success_pkt[MTU_SIZE] = { 0, };
                 uint8_t * cur = success_pkt;
@@ -108,12 +109,12 @@ void Server::handleAccept(int fd){
                 if(!mChatRoom[room_name]){
                     uint8_t error_pkt[] = { SEND_MESSAGE_RSP, 0xff };
                     write(fd, error_pkt, sizeof(error_pkt));
-                    continue;
+                    break;
                 }
                 else if(!mChatRoom[room_name]->available(fd)){
                     uint8_t error_pkt[] = { SEND_MESSAGE_RSP, 0xfe };
                     write(fd, error_pkt, sizeof(error_pkt));
-                    continue;
+                    break;
                 }
                 uint8_t success_pkt[MTU_SIZE] = { 0, };
                 uint8_t * send_pkt_cur = success_pkt;
@@ -148,6 +149,7 @@ void Server::handleAccept(int fd){
 
             } break;
         }
+        mAcceptMutex.unlock();
     }
     close(fd);
 }

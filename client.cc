@@ -161,7 +161,7 @@ void Client::recvChildMsg(std::string name){
             std::cout<<"\t\t[!] Quit"<<std::endl;
             return;
         }
-        
+        mCrpytoSys.mMutex.lock();
         for(auto it : mCrpytoSys.getMemberPubKey() ){
             uint8_t * send_pkt = new uint8_t[2048];
             //std::cout<<it.second<<std::endl;
@@ -169,6 +169,7 @@ void Client::recvChildMsg(std::string name){
             //hexdump(send_pkt, send_n);
             write(mSocket, send_pkt, send_n);
         }
+        mCrpytoSys.mMutex.unlock();
     }
 }
 bool Client::exchangePubKey(std::string name, std::string public_key){

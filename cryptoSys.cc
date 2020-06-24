@@ -78,7 +78,9 @@ uint32_t CryptoSystem::decryptRSA(uint8_t * src, uint32_t src_length, uint8_t * 
     return RSA_private_decrypt(src_length, src, dst, private_key, RSA_PKCS1_PADDING);
 }
 void CryptoSystem::addPubKey(std::string name, std::string public_key){
+    mMutex.lock();
     mPubKeys[name] = public_key;
+    mMutex.unlock();
 }
 std::map<std::string, std::string> CryptoSystem::getMemberPubKey(){
     return mPubKeys;

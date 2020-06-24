@@ -63,6 +63,8 @@ int startChild(int fd, std::string name){
     std::cout<<"Child PID : "<<getpid()<<std::endl;
     */
     ClientChild child(fd, name);
+    std::cin.clear();
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     while(true)
         child.promptMsg();
 }
@@ -119,7 +121,6 @@ SeccompChild * spwanChild(){
         SeccompWhitelist(SYS_exit_group),
         SeccompWhitelist(SYS_exit),
         SeccompWhitelist(SYS_write),
-        SeccompWhitelist(SYS_fstat),
         SeccompWhitelist(SYS_read),
         SeccompWhitelist(SYS_mmap),
     };

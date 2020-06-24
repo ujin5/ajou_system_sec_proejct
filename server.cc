@@ -196,7 +196,7 @@ void hexdump(void *mem, unsigned int len)
         }
 }
 int main(int argc, char *argv[]){
-    if( argc < 3){
+    if( argc < 2){
         std::cout<<"./server port"<<std::endl;
         exit(-1);
     }

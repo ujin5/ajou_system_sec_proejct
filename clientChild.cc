@@ -14,8 +14,9 @@ ClientChild::ClientChild(int parent_fd, std::string name){
     mName = name;
 }
 void ClientChild::promptMsg(){
-   std::string msg;
-   std::cout<<"["<<mName<<"] :";
-   std::cin>>msg;
-   write(mParentFd, msg.c_str(), msg.length());
+
+    std::string msg;
+    std::cout<<"["<<mName<<"] :";
+    std::getline(std::cin, msg);
+    write(mParentFd, msg.c_str(), msg.length());
 }
